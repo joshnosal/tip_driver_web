@@ -146,7 +146,7 @@ export default async function SettingsPage({ params }: { params: {id: string}}){
     } 
     
   } catch(e) {
-    console.log(e)
+    // console.log(e)
     return null
     // console.log(e)
     throw new Error(ErrorTypes.DefaultServer)

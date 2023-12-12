@@ -4,11 +4,15 @@ async function request<TResponse>(
 ): Promise<TResponse> {
   const response = await fetch(url, config)
   if(response.ok) {
-    let text = await response.text()
-    return text ? JSON.parse(text) : undefined
-    
+    const contentType = response.headers.get('content-type')
+    if(contentType && contentType.indexOf('text/html') !== -1) {
+      return await response.text() as TResponse
+    } else if (contentType && contentType.indexOf('application/json') !== -1) {
+      return await response.json() as TResponse
+    } else {
+      return undefined as TResponse
+    }
   } else {
-    console.log(response)
     throw new Error(await response.json())
   }
 }

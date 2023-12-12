@@ -24,6 +24,16 @@ export default function SettingsDisplay(props: SettingsProps){
     content: React.ReactNode
   }[] = [
     {
+      key: 'stripe-account',
+      title: 'Stripe',
+      content: (
+        <StripeForm
+          company={props.company}
+          stripeStatus={props.stripeStatus}
+        />
+      )
+    },
+    {
       key: 'subscriptions',
       title: 'Subscriptions',
       content: (
@@ -41,16 +51,6 @@ export default function SettingsDisplay(props: SettingsProps){
           company={props.company}
           stripePublicKey={props.stripePublicKey}
           subscriptionInfo={props.subscriptionInfo}
-        />
-      )
-    },
-    {
-      key: 'stripe-account',
-      title: 'Stripe',
-      content: (
-        <StripeForm
-          company={props.company}
-          stripeStatus={props.stripeStatus}
         />
       )
     },
