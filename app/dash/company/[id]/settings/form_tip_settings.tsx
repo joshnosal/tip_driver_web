@@ -7,13 +7,15 @@ import { CloseOutlined, DeleteOutlined } from '@ant-design/icons'
 import api from '@/utils/API'
 import { getErrorMessage } from '@/utils/ErrorHandler'
 import { AppContext } from '@/utils/AppContext'
+import { useAuth } from '@clerk/nextjs'
 
 export default function TipSettingsForm({ company }: { company: CompanyProps}){
-  const { message, Authorization } = useContext(AppContext)
+  const { message } = useContext(AppContext)
   const [ tipLevels, setTipLevels ] = useState(company.tip_levels)
   const tipLevelsRef = useRef(tipLevels)
   const [ customTip, setCustomTip ] = useState(company.custom_tip)
   const customTipRef = useRef(customTip)
+  const { getToken } = useAuth()
 
   useEffect(() => {
     tipLevelsRef.current = tipLevels
@@ -32,7 +34,7 @@ export default function TipSettingsForm({ company }: { company: CompanyProps}){
         },
         headers: {
           companyId: company._id,
-          Authorization
+          Authorization: `Bearer ${ await getToken() }`
         }
       })
     } catch(e) {
@@ -91,9 +93,6 @@ export default function TipSettingsForm({ company }: { company: CompanyProps}){
             danger
           />
         </Form.Item>
-        // <div>
-        //   {`Level ${index+1}`}
-        // </div>
       ))}
       <Button
         className='self-start'

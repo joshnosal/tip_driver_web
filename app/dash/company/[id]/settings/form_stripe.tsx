@@ -7,6 +7,7 @@ import { useContext, useState, useEffect } from 'react'
 import { Button, Tag, Popconfirm } from 'antd'
 import { useRouter } from 'next/navigation'
 import { CheckCircleTwoTone, CheckOutlined, CloseOutlined } from '@ant-design/icons'
+import { useAuth } from '@clerk/nextjs'
 
 type Props = {
   company: CompanyProps
@@ -27,9 +28,9 @@ const EnabledTag = ({ enabled }: { enabled: boolean }) => (
 )
 
 export default function StripeForm({ company, stripeStatus }: Props){
-  const { message, Authorization } = useContext(AppContext)
+  const { message } = useContext(AppContext)
   const [ loading, setLoading ] = useState<string>('')
-  const router = useRouter()
+  const { getToken } = useAuth()
 
   const createAccount = (prop: string) => async () => {
     try {
@@ -39,7 +40,7 @@ export default function StripeForm({ company, stripeStatus }: Props){
         headers: {
           companyId: company._id,
           redirectUrl: window.location.href,
-          Authorization
+          Authorization: `Bearer ${ await getToken() }`
         }
       })
       window.location.href = url
@@ -58,7 +59,7 @@ export default function StripeForm({ company, stripeStatus }: Props){
         headers: { 
           companyId: company._id, 
           redirectUrl: window.location.href,
-          Authorization
+          Authorization: `Bearer ${ await getToken() }`
         }
       })
       window.location.href = link
@@ -76,7 +77,7 @@ export default function StripeForm({ company, stripeStatus }: Props){
         url: process.env.NEXT_PUBLIC_API_URL + '/stripe/dashboard_link', 
         headers: { 
           companyId: company._id,
-          Authorization
+          Authorization: `Bearer ${ await getToken() }`
         }
       })
       setLoading('')

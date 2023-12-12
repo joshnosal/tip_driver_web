@@ -7,9 +7,10 @@ import api from '@/utils/API'
 import { AppContext } from '@/utils/AppContext'
 import { getErrorMessage } from '@/utils/ErrorHandler'
 import { useRouter } from 'next/navigation'
+import { useAuth } from '@clerk/nextjs'
 
 export default function NewCompanyPage(){
-  const { message, addCompany, updateCompany, Authorization, companies } = useContext(AppContext)
+  const { message, addCompany, updateCompany, companies } = useContext(AppContext)
   const [ loading, setLoading ] = useState<boolean>(false)
   const [ complete, setComplete ] = useState<boolean>(true)
   const [ company, setCompany ] = useState<Partial<CompanyProps> & {admins: string[], basic_users: string[]}>({
@@ -17,6 +18,7 @@ export default function NewCompanyPage(){
     basic_users: []
   })
   const router = useRouter()
+  const { getToken } = useAuth()
 
   const createCompany = async () => {
     setLoading(true)
@@ -24,7 +26,7 @@ export default function NewCompanyPage(){
       let newCo = await api.post<Partial<CompanyProps>,CompanyProps>({ 
         url: process.env.NEXT_PUBLIC_API_URL + '/company/new', 
         body: company,
-        headers: { Authorization }
+        headers: { Authorization: `Bearer ${await getToken()}` }
     })
       addCompany(newCo)
       updateCompany(newCo)

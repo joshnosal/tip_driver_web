@@ -18,18 +18,16 @@ export default async function DashboardLayout(props: {children: React.ReactNode}
   if(user.publicMetadata.validated === false || user.publicMetadata.validated === 'false') clerkClient.users.updateUser(user.id, { publicMetadata: {  }})
 
   let email = clerkTools.getPrimaryEmail(user)
-  let Authorization = `Bearer ${await getToken()}`
 
   companies = await api.get<CompanyProps[]>({
     url: process.env.NEXT_PUBLIC_API_URL + '/user/companies',
-    headers: { Authorization }
+    headers: { Authorization: `Bearer ${await getToken()}` }
   })
 
   return (
     <AppContextProvider
       companies={companies}
       user={JSON.parse(JSON.stringify(user))}
-      authorization={Authorization}
     >
       <div className='w-screen h-screen flex flex-col overflow-hidden bg-slate-100'>
         <DashHeader/>

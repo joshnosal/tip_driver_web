@@ -34,6 +34,7 @@ export type SettingsProps = {
     subscriptions: Stripe.Subscription[]
     trialed: boolean
   }
+  Authorization: string
 }
 
 export default async function SettingsPage({ params }: { params: {id: string}}){
@@ -47,22 +48,26 @@ export default async function SettingsPage({ params }: { params: {id: string}}){
 
   try {
     const Authorization = `Bearer ${await getToken()}`
-
-    let company = await api.get<CompanyProps>({
-      url: process.env.NEXT_PUBLIC_API_URL + '/company/company',
-      headers: {
-        companyId: params.id,
-        Authorization
-      }
-    })
+    
+    let company: CompanyProps | undefined
+    try {
+      company = await api.get<CompanyProps>({
+        url: process.env.NEXT_PUBLIC_API_URL + '/company/company',
+        headers: {
+          companyId: params.id,
+          Authorization
+        }
+      })
+    } catch(e) {}
     if(!company) throw new Error(ErrorTypes.NoAuth)
-    if(!process.env.STRIPE_PUBLIC) throw new Error()
+    if(!process.env.NEXT_PUBLIC_STRIPE_PUBLIC) throw new Error('Missing stripe API Key')
 
     
     props = {
+      Authorization,
       company: JSON.parse(JSON.stringify(company)),
       stripeStatus: { chargesEnabled: false, payoutsEnabled: false, missingFields: 0 },
-      stripePublicKey: process.env.STRIPE_PUBLIC,
+      stripePublicKey: process.env.NEXT_PUBLIC_STRIPE_PUBLIC,
       subscriptionInfo: {
         prices: [],
         products: [],
@@ -70,7 +75,6 @@ export default async function SettingsPage({ params }: { params: {id: string}}){
         trialed: false
       }
     }
-
     if(company.stripe_id) {
       try {
         const account = await api.get<Stripe.Account>({
@@ -85,6 +89,7 @@ export default async function SettingsPage({ params }: { params: {id: string}}){
         if(account.requirements && account.requirements.currently_due) props.stripeStatus.missingFields = account.requirements.currently_due.length || 0
       } catch(e) {}
     }
+    
 
     let method: Stripe.PaymentMethod|undefined
     try {
@@ -141,8 +146,9 @@ export default async function SettingsPage({ params }: { params: {id: string}}){
     } 
     
   } catch(e) {
-    
     console.log(e)
+    return null
+    // console.log(e)
     throw new Error(ErrorTypes.DefaultServer)
   }
 

@@ -6,13 +6,15 @@ import Stripe from 'stripe';
 import api from '@/utils/API';
 import { useRouter } from 'next/navigation'
 import { CheckCircleTwoTone, MinusCircleOutlined } from '@ant-design/icons'
+import { useAuth } from '@clerk/nextjs'
 
 type Props = Pick<SettingsProps, 'company'|'subscriptionInfo'>
 
 export default function SubscriptionsForm({ company, subscriptionInfo: { prices, products, subscriptions, trialed }}: Props){
   const [ loading, setLoading ] = React.useState<string|void>()
-  const { message, Authorization } = React.useContext(AppContext)
+  const { message } = React.useContext(AppContext)
   const router = useRouter()
+  const { getToken } = useAuth()
 
   const startSubscription = (priceId: string) => async () => {
     setLoading(`start-${priceId}`)
@@ -22,7 +24,7 @@ export default function SubscriptionsForm({ company, subscriptionInfo: { prices,
         headers: {
           companyId: company._id,
           priceId,
-          Authorization
+          Authorization: `Bearer ${ await getToken() }`
         }
       })
       router.refresh()
@@ -41,7 +43,7 @@ export default function SubscriptionsForm({ company, subscriptionInfo: { prices,
         headers: {
           companyId: company._id,
           priceId,
-          Authorization
+          Authorization: `Bearer ${ await getToken() }`
         }
       })
       router.refresh()

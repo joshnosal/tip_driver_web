@@ -8,6 +8,7 @@ async function request<TResponse>(
     return text ? JSON.parse(text) : undefined
     
   } else {
+    console.log(response)
     throw new Error(await response.json())
   }
 }

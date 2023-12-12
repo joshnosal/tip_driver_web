@@ -7,6 +7,7 @@ import api from '@/utils/API';
 import { useRouter } from 'next/navigation'
 import { PaymentElement, Elements, useStripe, useElements, AddressElement } from '@stripe/react-stripe-js'
 import { loadStripe } from '@stripe/stripe-js'
+import { useAuth } from '@clerk/nextjs';
 
 type Props =  Pick<SettingsProps, 'company'|'stripePublicKey'|'subscriptionInfo'> 
 interface SubProps extends Props {
@@ -18,7 +19,8 @@ function CustomForm(props: SubProps){
   const stripe = useStripe()
   const elements = useElements()
   const [ loading, setLoading ] = React.useState(false)
-  const { message, Authorization } = React.useContext(AppContext)
+  const { message } = React.useContext(AppContext)
+  const { getToken } = useAuth()
   const router = useRouter()
 
   const handleSubmit: React.MouseEventHandler<HTMLElement> = async (e) => {
@@ -40,7 +42,7 @@ function CustomForm(props: SubProps){
         headers: {
           companyId: props.company._id,
           paymentMethodId: method.paymentMethod.id,
-          Authorization
+          Authorization: `Bearer ${ await getToken() }`
         }
       })
 
@@ -74,7 +76,8 @@ function CustomForm(props: SubProps){
 
 export default function PaymentMethodForm(props: Props){
   const [ view, setView ] = React.useState<string|void>()
-  const { message, Authorization } = React.useContext(AppContext)
+  const { message } = React.useContext(AppContext)
+  const { getToken } = useAuth()
   const router = useRouter()
 
   let method = props.subscriptionInfo.paymentMethod
@@ -95,7 +98,10 @@ export default function PaymentMethodForm(props: Props){
     try {
       await api.get({
         url: process.env.NEXT_PUBLIC_API_URL + '/stripe/delete_payment_method',
-        headers: { companyId: props.company._id, Authorization }
+        headers: { 
+          companyId: props.company._id, 
+          Authorization: `Bearer ${ await getToken() }`
+        }
       })
       router.refresh()
     } catch(e) {

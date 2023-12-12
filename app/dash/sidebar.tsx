@@ -13,12 +13,12 @@ import Stripe from 'stripe'
 
 
 export default function DashSidebar(){
-  const { signOut } = useAuth()
+  const { signOut, getToken } = useAuth()
   const router = useRouter()
   const pathName = usePathname()
   const searchParams = useSearchParams()
 
-  const { message, companies, Authorization } = useContext(AppContext)
+  const { message, companies } = useContext(AppContext)
   const [ selectedKeys, setSelectedKeys ] = useState<string[]>([])
   const [ company, setCompany ] = useState<CompanyProps|void>()
   const [ errors, setErrors ] = useState<{settings: number, users: number, metrics: number}>({
@@ -67,7 +67,7 @@ export default function DashSidebar(){
       try {
         account = await api.get<Stripe.Response<Stripe.Account>>({
           url: process.env.NEXT_PUBLIC_API_URL + '/stripe/account',
-          headers: { companyId: company._id, Authorization },
+          headers: { companyId: company._id, Authorization: `Bearer ${await getToken()}` },
           signal: controller.signal
         })
       } catch(e) {
@@ -87,7 +87,7 @@ export default function DashSidebar(){
     }
     fetchData()
     return () => controller.abort()
-  }, [company, Authorization, errors])
+  }, [company])
 
   const accountItems: MenuProps['items'] = [
     {

@@ -7,7 +7,6 @@ import { message, ConfigProvider, theme, ThemeConfig } from 'antd';
 
 export interface AppContextProps {
   companies: CompanyProps[]
-  Authorization: string
   // company: CompanyProps|null
   updateCompany: (c: CompanyProps) => void
   addCompany: (c: CompanyProps) => void
@@ -18,7 +17,6 @@ export interface AppContextProps {
 interface InitialStateProps {
   companies: CompanyProps[]
   user: User|null
-  Authorization: string
   // company: CompanyProps|null
 }
 
@@ -34,13 +32,11 @@ export default function AppContextProvider(props: {
   children: React.ReactNode
   companies: CompanyProps[]
   user: User|null
-  authorization: string
 }){
   const [ messageApi, contextHolder ] = message.useMessage()
   const [ state, dispatch ] = React.useReducer(reducer, {
     companies: props.companies,
     user: props.user,
-    Authorization: props.authorization
   })
 
   const appContext = React.useMemo<AppContextProps>(() => ({

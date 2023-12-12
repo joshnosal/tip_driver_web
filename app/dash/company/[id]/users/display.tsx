@@ -14,6 +14,7 @@ import { getErrorMessage } from '@/utils/ErrorHandler';
 import { AppContext } from '@/utils/AppContext';
 import clerkTools from '@/lib/clerk/tools';
 import { useRouter } from 'next/navigation'
+import { useAuth } from '@clerk/nextjs'
 
 type Props = {
   company: CompanyProps
@@ -34,8 +35,9 @@ export default function UserDisplay({ company, users, userId }: Props){
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const [newUser, setNewUser] = useState<BasicUser|void>()
   const [loading, setLoading] = useState<string|void>()
-  const { message, Authorization } = useContext(AppContext)
+  const { message } = useContext(AppContext)
   const router = useRouter()
+  const { getToken } = useAuth()
 
   useEffect(() => {
     const handleResize = () => {
@@ -139,7 +141,7 @@ export default function UserDisplay({ company, users, userId }: Props){
         headers: {
           companyId: company._id,
           userId: id,
-          Authorization
+          Authorization: `Bearer ${ await getToken() }`
         }
       })
     } catch(err) {
@@ -218,7 +220,7 @@ export default function UserDisplay({ company, users, userId }: Props){
         body: newUser,
         headers: {
           companyId: company._id,
-          Authorization
+          Authorization: `Bearer ${ await getToken() }`
         }
       })
       let temp: BasicUser = {
@@ -246,7 +248,7 @@ export default function UserDisplay({ company, users, userId }: Props){
         body: selectedRowKeys,
         headers: {
           companyId: company._id,
-          Authorization
+          Authorization: `Bearer ${ await getToken() }`
         }
       })
       let selection = [...selectedRowKeys].filter(i => i !== userId)
