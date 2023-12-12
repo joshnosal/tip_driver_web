@@ -1,7 +1,6 @@
 import type { Metadata } from 'next'
 import './globals.css'
 import { ClerkProvider } from '@clerk/nextjs'
-import connectMongoose from '@/lib/database/connection'
 import StyledComponentsRegistry from '@/utils/AntRegistry'
 
 export const metadata: Metadata = {
@@ -14,7 +13,6 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  connectMongoose()
 
   return (
     <ClerkProvider>
