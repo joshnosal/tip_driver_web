@@ -125,6 +125,7 @@ export default function PaymentMethodForm(props: Props){
               <Button
                 type='primary'
                 onClick={() => setView('new')}
+                key={'1'}
               >Change</Button>,
               <Popconfirm
                 onConfirm={deletePaymentMethod}
@@ -133,6 +134,7 @@ export default function PaymentMethodForm(props: Props){
                 cancelText='No'
                 description='This will immediately cancel all subscriptions and cannot be un-done. If you would like to use a different card for payment, click "Change" below.'
                 overlayInnerStyle={{ width: 250 }}
+                key={'2'}
               >
                 <Button
                   danger
@@ -142,6 +144,7 @@ export default function PaymentMethodForm(props: Props){
               <Button
                 type='primary'
                 onClick={() => setView('new')}
+                key={'1'}
               >Add Payment Method</Button>
             ]}
           >

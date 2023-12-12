@@ -47,7 +47,7 @@ export default function DashSidebar(){
         if(co._id === paths[2]) return setCompany(co)
       }
     }
-  }, [pathName])
+  }, [pathName, companies])
 
   useEffect(() => {
     let paths = pathName.split('/').filter(p => p !== '')
