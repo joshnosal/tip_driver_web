@@ -76,16 +76,16 @@ export default function SubscriptionsForm({ company, subscriptionInfo: { prices,
             }
             size='small'
             actions={subscription ? [
-              <Button key='1'>Usage</Button>,
+              <Button key={'1'}>Usage</Button>,
               <Button
-                key='2'
+                key={'2'}
                 danger
                 onClick={stopSubscription(product.default_price.id)}
                 loading={Boolean(loading === `stop-${product.default_price.id}`)}
               >Cancel</Button>
             ] : [
               <Button
-                key='1'
+                key={'1'}
                 type='primary'
                 onClick={startSubscription(product.default_price.id)}
                 loading={Boolean(loading === `start-${product.default_price.id}`)}
