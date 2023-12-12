@@ -80,14 +80,14 @@ export default function DashSidebar(){
         !account.details_submitted ||
         !account.payouts_enabled
       ) {
-        setErrors({...errors, settings: 1})
+        setErrors(e => ({...e, settings: 1}))
       } else {
-        setErrors({...errors, settings: 0})
+        setErrors(e => ({...e, settings: 0}))
       }
     }
     fetchData()
     return () => controller.abort()
-  }, [company, Authorization])
+  }, [company, Authorization, errors])
 
   const accountItems: MenuProps['items'] = [
     {
