@@ -57,6 +57,7 @@ export default async function SettingsPage({ params }: { params: {id: string}}){
     })
     if(!company) throw new Error(ErrorTypes.NoAuth)
     if(!process.env.STRIPE_PUBLIC) throw new Error()
+
     
     props = {
       company: JSON.parse(JSON.stringify(company)),
@@ -143,6 +144,7 @@ export default async function SettingsPage({ params }: { params: {id: string}}){
     } 
     
   } catch(e) {
+    
     console.log(e)
     throw new Error(ErrorTypes.DefaultServer)
   }

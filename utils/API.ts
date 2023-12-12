@@ -4,7 +4,9 @@ async function request<TResponse>(
 ): Promise<TResponse> {
   const response = await fetch(url, config)
   if(response.ok) {
-    return await response.json()
+    let text = await response.text()
+    return text ? JSON.parse(text) : undefined
+    
   } else {
     throw new Error(await response.json())
   }
