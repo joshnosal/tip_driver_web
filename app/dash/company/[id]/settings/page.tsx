@@ -83,10 +83,7 @@ export default async function SettingsPage({ params }: { params: {id: string}}){
         if(account.charges_enabled) props.stripeStatus.chargesEnabled = true
         if(account.payouts_enabled) props.stripeStatus.payoutsEnabled = true
         if(account.requirements && account.requirements.currently_due) props.stripeStatus.missingFields = account.requirements.currently_due.length || 0
-      } catch(e) {
-
-      }
-      
+      } catch(e) {}
     }
 
     let method: Stripe.PaymentMethod|undefined
